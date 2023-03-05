@@ -4,11 +4,11 @@ import {Inventory} from '../models/Inventory';
 
 
 export const list: RequestHandler = async (req, res, next) => {
-    const inventories: Inventory[] = await Inventory.findAll();
+    const inventories: Inventory[] = await Inventory.findAll({
+        order: [['created_at', 'DESC']], // Order by created_at in descending order
+    });
 
-    return res
-        .status(200)
-        .json(inventories);
+    return res.status(200).json(inventories);
 };
 
 export const create: RequestHandler = async (req, res, next) => {
