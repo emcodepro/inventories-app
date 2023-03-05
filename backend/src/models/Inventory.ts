@@ -9,6 +9,7 @@ export class Inventory extends Model {
     @Column({
         type: DataType.UUID,
         allowNull: false,
+        defaultValue: DataType.UUIDV4,
         primaryKey: true,
     })
     guid!: string;
