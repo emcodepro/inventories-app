@@ -9,7 +9,7 @@ interface FormData {
     price: number;
 }
 
-const dummyLocations = ['Location 1', 'Location 2', 'Location 3',];
+const dummyLocations = ['მთავარი ოფისი', 'კავეა გალერია', 'კავეა თბილისი მოლი', 'კავეა ისთ ფოინთი', 'კავეა სითი მოლი'];
 
 const NewInventoryForm = () => {
 
