@@ -26,7 +26,7 @@ export class Inventory extends Model {
         type: DataType.STRING,
         allowNull: false,
     })
-    place!: string;
+    location!: string;
 
     @Column({
         type: DataType.FLOAT,
