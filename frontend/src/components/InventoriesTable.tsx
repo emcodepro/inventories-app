@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, {ReactNode, useState} from 'react';
 import { Table, Pagination, Row, Col } from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 
 const InventoriesTable = () => {
 
@@ -28,7 +29,7 @@ const InventoriesTable = () => {
     return (
         <div className="container-fluid mt-4">
             <div className="d-flex justify-content-between mb-3">
-                <button className="btn btn-primary">შექმნა</button>
+                <Link to="/new" className="btn btn-primary">შექმნა</Link>
             </div>
             <Table striped bordered hover>
                 <thead>
