@@ -1,23 +1,47 @@
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import { Table, Pagination, Row, Col } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import httpClient from "../services/httpClient";
+
+
+interface Inventory {
+    guid: string;
+    name: string;
+    location: string;
+    price: number;
+}
 
 const InventoriesTable = () => {
 
-    const inventories = [
-        {
-            guid: 1111,
-            name: 'Product 1',
-            location: 'Warehouse A',
-            price: 25.99
-        },
-    ];
+    const [loading, setLoading] = useState<Boolean>(true);
+    const [inventories, setInventories] = useState<Inventory[]>([]);
+
+    async function fetchData() {
+        const response = await httpClient.get("/inventories");
+        setInventories(response.data);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(20);
 
     const handlePageChange = (pageNumber: number) => {
         setCurrentPage(pageNumber);
+    };
+
+    const onDeleteClick = (guid: string) => {
+        if (window.confirm("დარწმუნებული ხართ რომ გსურთ ამ მოქმედების შესრულება?")) {
+            httpClient.delete(`/inventories/${guid}`)
+                .then(async () => {
+                    setLoading(true);
+                    await fetchData();
+                    setLoading(false);
+                });
+        }
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -29,7 +53,9 @@ const InventoriesTable = () => {
     return (
         <div className="container-fluid mt-4">
             <div className="d-flex justify-content-between mb-3">
-                <Link to="/new" className="btn btn-primary">შექმნა</Link>
+                <Link to="/new" className="btn btn-primary">
+                    შექმნა
+                </Link>
             </div>
             <Table striped bordered hover>
                 <thead>
@@ -40,19 +66,34 @@ const InventoriesTable = () => {
                     <th>ოპერაციები</th>
                 </tr>
                 </thead>
-                <tbody>
-                {currentItems.map((inventory) => (
-                    <tr key={inventory.guid}>
-                        <td>{inventory.name}</td>
-                        <td>{inventory.location}</td>
-                        <td>{inventory.price}</td>
-                        <td>
-                            <button className="btn btn-danger">წაშლა</button>
-                        </td>
+                {loading ? (
+                    <tbody>
+                    <tr>
+                        <td align="center" colSpan={4}>იტვირთება...</td>
                     </tr>
-                ))}
-                </tbody>
+                    </tbody>
+                ) : inventories.length === 0 ? (
+                    <tbody>
+                    <tr>
+                        <td align="center" colSpan={4}>ჩანაწერები ვერ მოიწებნა.</td>
+                    </tr>
+                    </tbody>
+                ) : (
+                    <tbody>
+                    {currentItems.map((inventory) => (
+                        <tr key={inventory.guid}>
+                            <td>{inventory.name}</td>
+                            <td>{inventory.location}</td>
+                            <td>{inventory.price}</td>
+                            <td>
+                                <button onClick={(event: React.MouseEvent<HTMLButtonElement>) => onDeleteClick(inventory.guid)} className="btn btn-danger">წაშლა</button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                )}
             </Table>
+            {inventories.length > 0 && (
             <Row>
                 <Col md={6}>
                     <div className="text-muted">{`ნაჩვენებია ${inventories.length}-დან ${indexOfFirstItem + 1}-${indexOfLastItem} ელემენტი`}</div>
@@ -78,7 +119,7 @@ const InventoriesTable = () => {
                         />
                     </Pagination>
                 </Col>
-            </Row>
+            </Row>)}
         </div>
     );
 };
