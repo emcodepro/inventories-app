@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {ToastContainer, toast} from "react-toastify";
 import {redirect} from 'react-router-dom';
+import httpClient from "../services/httpClient";
 
 interface FormData {
     name: string;
@@ -34,7 +35,7 @@ const NewInventoryForm = () => {
         setFormData(prevFormData => ({...prevFormData, price: isNaN(value) ? 0 : value}));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const errors: Record<keyof FormData, string> = {
             name: '',
@@ -55,21 +56,27 @@ const NewInventoryForm = () => {
         setFormErrors(errors);
 
         if (!Object.values(errors).some(Boolean)) {
-            toast.success('ჩანაწერი წარმატებით შეინახა', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            });
-            setFormData({
-                name: '',
-                location: '',
-                price: 0,
-            });
+            await httpClient.post('/inventories', formData)
+                .then(() => {
+                    toast.success('ჩანაწერი წარმატებით შეინახა', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                    });
+
+                    setFormData({
+                        name: '',
+                        location: '',
+                        price: 0,
+                    });
+                }).catch((err) => {
+                    console.log(err);
+                });
         }
     };
 
