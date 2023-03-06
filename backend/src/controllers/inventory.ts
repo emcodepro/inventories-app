@@ -64,7 +64,7 @@ export const generate: RequestHandler = async (req, res, next) => {
     try {
         const inventories = [];
 
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 10000; i++) {
             const name = `Inventory ${i}`;
             const price = parseFloat((Math.random() * 100).toFixed(2));
             const location = dummyLocations[Math.floor(Math.random() * dummyLocations.length)];
@@ -74,7 +74,7 @@ export const generate: RequestHandler = async (req, res, next) => {
 
         await Inventory.bulkCreate(inventories);
 
-        res.json({ message: 'Inventories created successfully!' });
+        res.json({ message: '10000 inventories created successfully!' });
     } catch (error) {
         next(error);
     }

@@ -1,8 +1,8 @@
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Pagination, Row, Col } from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import httpClient from "../services/httpClient";
-import {toast, ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Inventory {
     guid: string;
@@ -104,32 +104,61 @@ const InventoriesTable = () => {
                 )}
             </Table>
             {inventories.length > 0 && (
-            <Row>
-                <Col md={6}>
-                    <div className="text-muted">{`ნაჩვენებია ${inventories.length}-დან ${indexOfFirstItem + 1}-${indexOfLastItem} ელემენტი`}</div>
-                </Col>
-                <Col md={6}>
-                    <Pagination className="justify-content-end">
-                        <Pagination.Prev
-                            disabled={currentPage === 1}
-                            onClick={() => handlePageChange(currentPage - 1)}
-                        />
-                        {[...Array(totalPages)].map((_, index) => (
-                            <Pagination.Item
-                                key={index}
-                                active={index + 1 === currentPage}
-                                onClick={() => handlePageChange(index + 1)}
-                            >
-                                {index + 1}
-                            </Pagination.Item>
-                        ))}
-                        <Pagination.Next
-                            disabled={currentPage === totalPages}
-                            onClick={() => handlePageChange(currentPage + 1)}
-                        />
-                    </Pagination>
-                </Col>
-            </Row>)}
+                <Row>
+                    <Col md={6}>
+                        <div className="text-muted">{`ნაჩვენებია ${inventories.length}-დან ${indexOfFirstItem + 1}-${indexOfLastItem} ელემენტი`}</div>
+                    </Col>
+                    <Col md={6}>
+                        <Pagination className="justify-content-end">
+                            <Pagination.Prev
+                                disabled={currentPage === 1}
+                                onClick={() => handlePageChange(currentPage - 1)}
+                            />
+                            {totalPages > 1 && (
+                                <>
+                                    <Pagination.Item
+                                        key={1}
+                                        active={currentPage === 1}
+                                        onClick={() => handlePageChange(1)}
+                                    >
+                                        1
+                                    </Pagination.Item>
+                                    {currentPage > 4 && totalPages > 7 && <Pagination.Ellipsis />}
+                                    {[...Array(totalPages > 7 ? 5 : totalPages - 2)].map((_, index) => {
+                                        const pageNumber = currentPage + (index - 2);
+                                        if ([-1, 0, 1].includes(pageNumber) || pageNumber === totalPages) {
+                                            return null;
+                                        }
+                                        return (
+                                            <Pagination.Item
+                                                key={pageNumber}
+                                                active={currentPage === pageNumber}
+                                                onClick={() => handlePageChange(pageNumber)}
+                                            >
+                                                {pageNumber}
+                                            </Pagination.Item>
+                                        );
+                                    })}
+                                    {currentPage < totalPages - 3 && totalPages > 7 && <Pagination.Ellipsis />}
+                                    {totalPages > 1 && (
+                                        <Pagination.Item
+                                            key={totalPages}
+                                            active={currentPage === totalPages}
+                                            onClick={() => handlePageChange(totalPages)}
+                                        >
+                                            {totalPages}
+                                        </Pagination.Item>
+                                    )}
+                                </>
+                            )}
+                            <Pagination.Next
+                                disabled={currentPage === totalPages}
+                                onClick={() => handlePageChange(currentPage + 1)}
+                            />
+                        </Pagination>
+                    </Col>
+                </Row>
+            )}
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
