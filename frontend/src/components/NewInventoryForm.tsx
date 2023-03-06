@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {ToastContainer, toast} from "react-toastify";
-import {redirect} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import httpClient from "../services/httpClient";
 
 interface FormData {
@@ -9,7 +9,13 @@ interface FormData {
     price: number;
 }
 
-const dummyLocations = ['მთავარი ოფისი', 'კავეა გალერია', 'კავეა თბილისი მოლი', 'კავეა ისთ ფოინთი', 'კავეა სითი მოლი'];
+const dummyLocations = [
+    'მთავარი ოფისი',
+    'კავეა გალერია',
+    'კავეა თბილისი მოლი',
+    'კავეა ისთ ფოინთი',
+    'კავეა სითი მოლი'
+];
 
 const NewInventoryForm = () => {
 
@@ -35,6 +41,8 @@ const NewInventoryForm = () => {
         setFormData(prevFormData => ({...prevFormData, price: isNaN(value) ? 0 : value}));
     };
 
+    const navigate = useNavigate();
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const errors: Record<keyof FormData, string> = {
@@ -46,9 +54,11 @@ const NewInventoryForm = () => {
         if (!formData.name) {
             errors.name = 'ნივთის სახელი სავალდებულოა';
         }
+
         if (!formData.location) {
             errors.location = 'ნივთის ადგილმდებარეობა სავალდებულოა';
         }
+
         if (!formData.price) {
             errors.price = 'ფასი სავალდებულოა';
         }
@@ -74,6 +84,7 @@ const NewInventoryForm = () => {
                         location: '',
                         price: 0,
                     });
+                    navigate('/');
                 }).catch((err) => {
                     console.log(err);
                 });
