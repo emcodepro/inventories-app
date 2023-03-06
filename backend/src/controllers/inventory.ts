@@ -51,3 +51,31 @@ export const destroy: RequestHandler = async (req, res, next) => {
             });
     }
 };
+
+export const generate: RequestHandler = async (req, res, next) => {
+    const dummyLocations = [
+        'მთავარი ოფისი',
+        'კავეა გალერია',
+        'კავეა თბილისი მოლი',
+        'კავეა ისთ ფოინთი',
+        'კავეა სითი მოლი'
+    ];
+
+    try {
+        const inventories = [];
+
+        for (let i = 0; i < 1000; i++) {
+            const name = `Inventory ${i}`;
+            const price = parseFloat((Math.random() * 100).toFixed(2));
+            const location = dummyLocations[Math.floor(Math.random() * dummyLocations.length)];
+
+            inventories.push({ name, price, location });
+        }
+
+        await Inventory.bulkCreate(inventories);
+
+        res.json({ message: 'Inventories created successfully!' });
+    } catch (error) {
+        next(error);
+    }
+}
