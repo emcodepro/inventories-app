@@ -2,7 +2,7 @@ import React, {ReactNode, useEffect, useState} from 'react';
 import { Table, Pagination, Row, Col } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import httpClient from "../services/httpClient";
-
+import {toast, ToastContainer} from "react-toastify";
 
 interface Inventory {
     guid: string;
@@ -39,6 +39,16 @@ const InventoriesTable = () => {
                 .then(async () => {
                     setLoading(true);
                     await fetchData();
+                    toast.success('ჩანაწერი წარმატებით წაიშალა', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                    });
                     setLoading(false);
                 });
         }
@@ -120,6 +130,18 @@ const InventoriesTable = () => {
                     </Pagination>
                 </Col>
             </Row>)}
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 };
