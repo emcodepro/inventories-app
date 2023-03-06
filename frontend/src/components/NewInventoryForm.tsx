@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import React, {useState} from 'react';
+import {ToastContainer, toast} from "react-toastify";
+import {redirect} from 'react-router-dom';
 
 interface FormData {
     name: string;
@@ -6,7 +8,7 @@ interface FormData {
     price: number;
 }
 
-const dummyLocations = [  'Location 1',  'Location 2',  'Location 3',];
+const dummyLocations = ['Location 1', 'Location 2', 'Location 3',];
 
 const NewInventoryForm = () => {
 
@@ -23,13 +25,13 @@ const NewInventoryForm = () => {
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
+        const {name, value} = e.target;
+        setFormData(prevFormData => ({...prevFormData, [name]: value}));
     };
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseFloat(e.target.value);
-        setFormData(prevFormData => ({ ...prevFormData, price: isNaN(value) ? 0 : value }));
+        setFormData(prevFormData => ({...prevFormData, price: isNaN(value) ? 0 : value}));
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,12 +55,38 @@ const NewInventoryForm = () => {
         setFormErrors(errors);
 
         if (!Object.values(errors).some(Boolean)) {
-            // submit form data
+            toast.success('ჩანაწერი წარმატებით შეინახა', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+            setFormData({
+                name: '',
+                location: '',
+                price: 0,
+            });
         }
     };
 
     return (
         <div className="container-fluid mt-4">
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">ნივთის სახელი</label>

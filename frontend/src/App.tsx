@@ -1,5 +1,6 @@
 import React from 'react';
 import './assets/css/App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import AppHeader from "./components/AppHeader";
 import InventoriesTable from "./components/InventoriesTable";
 import { Routes, Route } from 'react-router-dom';
